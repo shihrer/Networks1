@@ -1,7 +1,9 @@
+import socket
+
 board = []
 eboard = []
 hit=0
-sink='A'
+sink='0'
 c=5
 b=4
 r=3
@@ -18,11 +20,14 @@ with open('eboard.txt') as my_file:
 
 
 x=0
-y=0
+y=1
 
 char = board[y][x]
 
 charlist = list(board[y])
+
+if x>9 or x<0 or y>9 or y<0:
+    print("ERROR 404")
 
 if char=='~':
     print("ERROR 410")
@@ -30,6 +35,11 @@ if char=='~':
 if char=='_':
     hit=0
     charlist[x] = '~'
+    board[y] = ''.join(charlist)
+    f = open("board.txt", 'w')
+    f.truncate()
+    for x in board:
+        f.write(x)
 
 if char=='C':
     hit=1
@@ -37,6 +47,11 @@ if char=='C':
     if c==0:
         sink='C'
     charlist[x] = '~'
+    board[y] = ''.join(charlist)
+    f = open("board.txt", 'w')
+    f.truncate()
+    for x in board:
+        f.write(x)
 
 if char=='B':
     hit=1
@@ -44,6 +59,11 @@ if char=='B':
     if b==0:
         sink='B'
     charlist[x] = '~'
+    board[y] = ''.join(charlist)
+    f = open("board.txt", 'w')
+    f.truncate()
+    for x in board:
+        f.write(x)
 
 if char=='R':
     hit=1
@@ -51,6 +71,11 @@ if char=='R':
     if r==0:
         sink='R'
     charlist[x] = '~'
+    board[y] = ''.join(charlist)
+    f = open("board.txt", 'w')
+    f.truncate()
+    for x in board:
+        f.write(x)
 
 if char=='S':
     hit=1
@@ -58,6 +83,11 @@ if char=='S':
     if s==0:
         sink='S'
     charlist[x] = '~'
+    board[y] = ''.join(charlist)
+    f = open("board.txt", 'w')
+    f.truncate()
+    for x in board:
+        f.write(x)
 
 if char=='D':
     hit=1
@@ -65,5 +95,10 @@ if char=='D':
     if d==0:
         sink='D'
     charlist[x] = '~'
+    board[y] = ''.join(charlist)
+    f = open("board.txt", 'w')
+    f.truncate()
+    for x in board:
+        f.write(x)
 
 print(hit,sink)

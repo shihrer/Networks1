@@ -7,7 +7,7 @@ ship_info = {'C':[5, 'Carrier'],
              'R':[3, 'Cruiser'],
              'S':[3, 'Submarine'],
              'D':[2, 'Destroyer']}
-
+own_board = ''
 
 def process_fire(params):
     try:
@@ -47,9 +47,41 @@ def process_fire(params):
         print('Bad request')
         return 400, None
 
+def board_html(file_name):
+    if file_name:
+        with open(file_name) as the_file:
+            return the_file.read()
+    else:
+        return ''
+
+def display_board(title, header, board_file=None):
+    if board_file:
+        html_string = board_html(board_file)
+    else:
+        html_string = ''
+    return '<html><head><title>{:s}</title></head><body><h1>{:s}</h1><pre>{:s}</pre></body></html>'.format(title, header, html_string)
+
+
 class BattleshipHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        pass
+        print('Received GET request to path: ' + self.path)
+        route = self.path
+        code = 404
+        if route == '/own_board.html':
+            print('Displaying own_board.html...')
+            code = 200
+            message = display_board('Your Board', "Player's Board", own_board)
+        elif route == '/opponent_board.html':
+            print('Displaying opponent_board.html...')
+            code = 200
+            message = display_board('Opponent Board', "The Opponenet's Board", 'eboard.txt')
+        else:
+            message = display_board('Oops', 'HTTP 404 Not Found')
+
+        self.send_response(code)
+        self.send_header('Content-Type', 'text/html')
+        self.end_headers()
+        self.wfile.write(message.encode())
 
     def do_POST(self):
         if self.headers['Content-Type'] == 'application/x-www-form-urlencoded':
@@ -79,7 +111,8 @@ if __name__ == "__main__":
     server = HTTPServer((host, port), BattleshipHandler)
 
     # Read board file into memory
-    with open(sys.argv[2]) as file:
+    own_board = sys.argv[2]
+    with open(own_board) as file:
         board = []
         for line in file:
             board.append(list(line))

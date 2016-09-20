@@ -23,11 +23,11 @@ def handle_response(the_response, coords):
         if int(query_vars['hit'][0]) == 0:
             # Miss
             print('That was a miss.')
-            e_board[coords[1]][coords[0]] = '~'
+            e_board[int(coords[1])][int(coords[0])] = '~'
         elif int(query_vars['hit'][0]) == 1:
             # Hit
             print('That was a hit!')
-            e_board[coords[1]][coords[0]] = 'X'
+            e_board[int(coords[1])][int(coords[0])] = 'X'
             if 'sink' in list(query_vars.keys()):
                 # Sunk a ship
                 print('You sunk a ' + ship_dict[query_vars['sink'][0]])
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     # Setup headers
     headers = {'Content-type':'application/x-www-form-urlencoded', 'Content-Length': 7}
     # Encode the parameters into ?x=val&y=val
-    fire_coords = (int(sys.argv[3]), int(sys.argv[4]))
+    fire_coords = (sys.argv[3], sys.argv[4])
     params = urllib.parse.urlencode({'x':fire_coords[0], 'y':fire_coords[1]})
     # Make the POST request for the fire
     http_conn.request('POST', params, None, headers)

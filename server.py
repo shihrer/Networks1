@@ -20,12 +20,16 @@ def process_fire(params):
             return 404, None
         # look for a hit
         elif board[y][x] in list(ship_info.keys()):
-            # Still need to determine if it was a sink
+            # Client hit
             print('Client hit a ' + ship_info[board[y][x]][1])
+            # Setup message for hit
             msg = 'hit=1'
+            # Check to see if client sunk a ship
             if ship_info[board[y][x]][0] > 1:
+                # No sink, update ship state
                 ship_info[board[y][x]][0] -= 1
             elif ship_info[board[y][x]][0] == 1:
+                # This was a sink.  Update state and modify message.
                 ship_info[board[y][x]][0] = 0
                 msg += '&sink=' + board[y][x]
                 print('Client sunk ' + ship_info[board[y][x]][1])

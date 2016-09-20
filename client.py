@@ -63,6 +63,15 @@ import socket
 #     print(resp)
 #
 #     s.close()
+import urllib
+from http.client import HTTPConnection
 
-import requests
-r = requests.post('http://127.0.0.1:5001', params={'x':0, 'y':0})
+http_conn = HTTPConnection('127.0.0.1', 5001)
+headers = {'Content-type':'application/x-www-form-urlencoded', 'Content-Length': 7}
+params = urllib.parse.urlencode({'x':0, 'y':0})
+http_conn.request('POST', params, None, headers)
+response = http_conn.getresponse()
+print(response.read().decode())
+print(response.code)
+
+http_conn.close()

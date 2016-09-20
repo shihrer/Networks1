@@ -26,9 +26,6 @@ import socket, sys, requests
 #
 # charlist = list(board[y])
 #
-# if x>9 or x<0 or y>9 or y<0:
-#     print("ERROR 404")
-#
 # if char=='~':
 #     print("ERROR 410")
 #
@@ -102,36 +99,48 @@ import socket, sys, requests
 #         f.write(x)
 #
 # print(hit,sink)
+import urllib
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
+def determine_response(params):
+    ships = ['C', 'B', 'R', 'S', 'D']
+    x = params['x'][0]
+    y = params['y'][0]
+    # look at board and see if x,y is hit, miss, out of bounds, already fired at, not formatted right
+    # Check for out of bounds
+    if x>9 or x<0 or y>9 or y<0:
+        return (404, "HTTP Not Found")
+    #look for a hit
+    elif board[x][y] in ships:
+        #
+        return (200,'hit=1')
 
 class BattleshipHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         pass
 
     def do_POST(self):
-        pass
+        if self.headers['Content-Type'] == 'application/x-www-form-urlencoded':
+            length = int(self.headers['Content-Length'])
+            print(self.headers['Content-Type'])
+            query_vars = urllib.parse.parse_qs(self.path)
+            print('x: ' + query_vars['x'][0] + ' y: ' + query_vars['y'][0])
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html')
+            self.end_headers()
+            self.wfile.write(determine_response(query_vars).encode())
+        else:
+            self.send_response_only(404)
+
+
 
 if __name__ == "__main__":
-    # s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # try:
-    #     s.bind(('127.0.0.1', 5001))
-    # except socket.error as err:
-    #     print(err[1])
-    #     sys.exit()
-    #
-    # s.listen()
-    # while True:
-    #     conn, addr = s.accept()
-    #     print("Client connected from " + addr[0] + ':' + str(addr[1]))
-    #     resp = (conn.recv(1024)).strip()
-    #     print(resp.decode())
-    #     response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<html><head><title>test</title></head><body><h1>Test</h1></body></html>"
-    #     conn.send(response.encode())
-    #     conn.close()
+    server = HTTPServer(('127.0.0.1', 5001), BattleshipHandler)
+    with open(sys.argv[2]) as file:
+        board = file.readlines()
 
     try:
-        server = HTTPServer(('127.0.0.1', 5001), BattleshipHandler)
+        print('Server starting ')
         server.serve_forever()
     except KeyboardInterrupt:
         server.socket.close()

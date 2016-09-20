@@ -68,6 +68,9 @@ class BattleshipHandler(BaseHTTPRequestHandler):
         else:
             self.send_response(404)
 
+        def log_message(self, format, *args):
+            pass
+
 
 if __name__ == "__main__":
     host = socket.gethostbyname(socket.gethostname())

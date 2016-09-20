@@ -1,7 +1,6 @@
-import socket
-import urllib, sys
+import urllib, sys, socket
 from http.server import BaseHTTPRequestHandler, HTTPServer
-
+from shutil import copyfile
 # Dictionary to track state of ships
 ship_info = {'C':[5, 'Carrier'],
              'B':[4, 'Battleship'],
@@ -73,6 +72,8 @@ class BattleshipHandler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    # Setup a new enemy board for the client.
+    copyfile('eboard.blank.txt', 'eboard.txt')
     host = socket.gethostbyname(socket.gethostname())
     port = int(sys.argv[1])
     server = HTTPServer((host, port), BattleshipHandler)
